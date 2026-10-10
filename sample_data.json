@@ -1,0 +1,33 @@
+{
+  "workers": [
+    {"id": "w1", "name": "Cutter A", "skills": ["cutting"]},
+    {"id": "w2", "name": "Embroider A", "skills": ["embroidery"]},
+    {"id": "w3", "name": "Embroider B", "skills": ["embroidery"]},
+    {"id": "w4", "name": "Dyer", "skills": ["dyeing"]},
+    {"id": "w5", "name": "Stitcher A", "skills": ["stitching", "finishing"]},
+    {"id": "w6", "name": "QC Lead", "skills": ["qc", "finishing"]}
+  ],
+  "orders": [
+    {"id": "ORD-101", "due_hour": 32, "priority": 3},
+    {"id": "ORD-102", "due_hour": 40, "priority": 1},
+    {"id": "ORD-103", "due_hour": 16, "priority": 2}
+  ],
+  "tasks": [
+    {"id": "101-dye",   "order_id": "ORD-101", "skill": "dyeing",     "duration": 6,  "status": "in_progress", "assignee": "w4"},
+    {"id": "101-cut",   "order_id": "ORD-101", "skill": "cutting",    "duration": 3},
+    {"id": "101-emb",   "order_id": "ORD-101", "skill": "embroidery", "duration": 16, "predecessors": ["101-cut"]},
+    {"id": "101-stitch","order_id": "ORD-101", "skill": "stitching",  "duration": 6,  "predecessors": ["101-emb", "101-dye"]},
+    {"id": "101-qc",    "order_id": "ORD-101", "skill": "qc",         "duration": 1,  "predecessors": ["101-stitch"]},
+
+    {"id": "102-cut",   "order_id": "ORD-102", "skill": "cutting",    "duration": 2},
+    {"id": "102-emb",   "order_id": "ORD-102", "skill": "embroidery", "duration": 10, "predecessors": ["102-cut"]},
+    {"id": "102-stitch","order_id": "ORD-102", "skill": "stitching",  "duration": 5,  "predecessors": ["102-emb"]},
+    {"id": "102-qc",    "order_id": "ORD-102", "skill": "qc",         "duration": 1,  "predecessors": ["102-stitch"]},
+
+    {"id": "103-emb",   "order_id": "ORD-103", "skill": "embroidery", "duration": 8,  "status": "in_progress", "assignee": "w3"},
+    {"id": "103-dye",   "order_id": "ORD-103", "skill": "dyeing",     "duration": 4},
+    {"id": "103-stitch","order_id": "ORD-103", "skill": "stitching",  "duration": 4,  "predecessors": ["103-emb", "103-dye"]},
+    {"id": "103-finish","order_id": "ORD-103", "skill": "finishing",  "duration": 2,  "predecessors": ["103-stitch"]},
+    {"id": "103-qc",    "order_id": "ORD-103", "skill": "qc",         "duration": 1,  "predecessors": ["103-finish"]}
+  ]
+}

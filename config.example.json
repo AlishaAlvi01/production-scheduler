@@ -1,0 +1,27 @@
+{
+  "tasks_table": "Tasks",
+  "workers_table": "Workers",
+  "orders_table": "Orders",
+  "task_fields": {
+    "title": "Title",
+    "order": "Order",
+    "skill": "Skill",
+    "remaining_hours": "Remaining Hours",
+    "predecessors": "Predecessors",
+    "status": "Status",
+    "assignee": "Assignee",
+    "planned_start": "Planned Start",
+    "planned_end": "Planned End",
+    "planned_assignee": "Planned Assignee",
+    "open_formula": "{Status} != 'Done'"
+  },
+  "worker_fields": {
+    "name": "Name",
+    "skills": "Skills",
+    "active_formula": "{Active}"
+  },
+  "order_fields": {
+    "due_date": "Due Date",
+    "priority": "Priority"
+  }
+}

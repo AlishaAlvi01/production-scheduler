@@ -1,0 +1,50 @@
+name: Production schedule
+
+on:
+  # Uncomment to run nightly once AIRTABLE_TOKEN and AIRTABLE_BASE_ID secrets are set:
+  # schedule:
+  #   - cron: "0 21 * * *"   # 02:00 PKT
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run (don't write to Airtable)"
+        type: boolean
+        default: false
+      rollback:
+        description: "Snapshot file to roll back to (optional)"
+        type: string
+        default: ""
+
+jobs:
+  schedule:
+    runs-on: ubuntu-latest
+    env:
+      AIRTABLE_TOKEN: ${{ secrets.AIRTABLE_TOKEN }}
+      AIRTABLE_BASE_ID: ${{ secrets.AIRTABLE_BASE_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -r requirements.txt
+      - run: cp config.example.json config.json
+
+      - name: Roll back
+        if: ${{ inputs.rollback != '' }}
+        run: python run.py --rollback "${{ inputs.rollback }}"
+
+      - name: Solve and write
+        if: ${{ inputs.rollback == '' }}
+        run: python run.py --airtable ${{ inputs.dry_run && '--dry-run' || '' }} | tee report.txt
+
+      - name: Commit snapshot
+        if: ${{ inputs.rollback == '' && !inputs.dry_run }}
+        run: |
+          git config user.name "scheduler-bot"
+          git config user.email "scheduler-bot@users.noreply.github.com"
+          git add snapshots/ || true
+          git commit -m "Schedule snapshot $(date -u +%F)" || echo "nothing to commit"
+          git push
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: schedule-report, path: report.txt, if-no-files-found: ignore }
